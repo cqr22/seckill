@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codeman.seckill.dao.SeckillGoodsMapper" >
+      <resultMap id="SeckillInfo" type="com.codeman.seckill.dto.SeckillInfo">
+          <id column="seckill_id" property="seckillId" jdbcType="BIGINT" />
+          <result column="seckill_goods_id" property="seckillGoodsId" jdbcType="BIGINT" />
+          <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+          <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+          <result column="title" property="title" jdbcType="VARCHAR" />
+          <result column="price" property="price" jdbcType="DECIMAL" />
+          <result column="description" property="description" jdbcType="VARCHAR" />
+          <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+      </resultMap>
+      <select id="listAllSeckill" resultMap="SeckillInfo" >
+        select
+          sg.seckill_goods_id , sg.start_date , sg.end_date , g.title , g.title , g.description , g.img_url , s.stock
+        from seckill_goods sg
+        LEFT JOIN
+         goods g
+         ON sg.seckill_goods_id = g.goods_id
+        LEFT JOIN
+         stock s
+           ON sg.seckill_goods_id = s.goods_id
+        ORDER BY sg.start_date
+      </select>
+</mapper>
