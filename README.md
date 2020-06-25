@@ -167,12 +167,12 @@ Google开源工具包Guava提供了限流工具类RateLimiter基于令牌桶算�
         // 创建一个限流器 每秒生成的300个令牌数
         rateLimiter = RateLimiter.create(300);
     }
+     // 如果获取不到限流令牌
+     if (!rateLimiter.tryAcquire()){
+          return ResultBody.success(CommonEnum.RATELIMIT.getResultCode(),CommonEnum.RATELIMIT.getResultMsg(),"");
+     }
+   
     
-    
-   // 如果获取不到限流令牌
-   if (!rateLimiter.tryAcquire()){
-        return ResultBody.success(CommonEnum.RATELIMIT.getResultCode(),CommonEnum.RATELIMIT.getResultMsg(),"");
-    }
 
     
 ## 队列泄洪
