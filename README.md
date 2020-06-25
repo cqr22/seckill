@@ -156,6 +156,25 @@ sql判断防止为负数
 Google开源工具包Guava提供了限流工具类RateLimiter基于令牌桶算法实现流量限制，十分高效。令牌式是专门应对突发的并发的，RateLimiter通过限制后面请求的等待时间，来支持一定程度的突发请求(预消费)
 令牌桶算法的原理是系统会以一个恒定的速度往桶里放入令牌，而如果请求需要被处理，则需要先从桶里获取一个令牌，当桶里没有令牌可取时，则拒绝服务。
 
+    /**
+     * 基于令牌桶算法实现流量限制 适用于突发的高并发
+     */
+    private RateLimiter rateLimiter;
+        
+        
+    @PostConstruct
+    public void init(){
+        // 创建一个限流器 每秒生成的300个令牌数
+        rateLimiter = RateLimiter.create(300);
+    }
+    
+    
+   // 如果获取不到限流令牌
+   if (!rateLimiter.tryAcquire()){
+        return ResultBody.success(CommonEnum.RATELIMIT.getResultCode(),CommonEnum.RATELIMIT.getResultMsg(),"");
+    }
+
+    
 ## 队列泄洪
 防止浪涌流量涌入后台，用排队的策略限制并发流量，依靠排队和下游阻塞窗口程度调整队列释放流量大小。
 以支付宝银行网关队列为例，支付宝需要对接许多银行网关，当你的支付宝绑定多张银行卡，那么支付宝对于这些银行都有不同的支付渠道。在大促活动时，支付宝的网关会有上亿级别的流量，银行的网关扛不住，支付宝就会将支付请求队列放到自己的消息队列中，依靠银行网关承诺可以处理的TPS流量去泄洪；
